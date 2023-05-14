@@ -21,6 +21,30 @@ data <- data %>%
   select(starts_with('ENS'),'November_sampling_weight(g)', 'June.sampling.weight(g)', 
   'June.sampling.smolt.status', 'light.treatment', 'November.sampling.status') 
 
+#data visualization
+
+#calculating colMeans
+Mean_data <- data %>% 
+  select(starts_with('ENSSSAG')) %>% 
+  colMeans()  %>%    
+  enframe() %>% 
+  filter(value > 0)  # keep all except genes expressed less than 0
+
+# calculating min/max expression level
+min(Mean_data$value)
+max(Mean_data$value)
+
+median_tpm <- median(as.numeric(Mean_data$value)) #calculating the median TPM
+
+
+# making a histogram to visulize the expression data
+histo_plot <- Mean_data %>% 
+  ggplot (aes(x = value)) +
+  geom_histogram( fill="steelblue", colour="black") +
+  labs(x = "Mean normalized expression level (tpm)", y = "Number of genes") +
+  theme_light()
+
+
 
 #remove the zero expression genes
 col_means <- colMeans(data[, 1:46944])     
